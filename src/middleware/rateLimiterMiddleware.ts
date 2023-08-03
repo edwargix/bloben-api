@@ -19,7 +19,7 @@ export const rateLimiterMiddleware = (
 
         if (record) {
           logger.warn(
-            `Too many requests for URL: ${req.originalUrl} METHOD: ${req.method}`,
+            `Too many requests from ${realIP} for URL: ${req.originalUrl} METHOD: ${req.method}`,
             [LOG_TAG.REST, LOG_TAG.SECURITY]
           );
           throw throwError(429, 'Too many requests', req);
