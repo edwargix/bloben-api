@@ -17,7 +17,7 @@ SyncRouter.get(
     rateLimiterMiddleware(RATE_LIMIT.SYNC),
     celebrate(emptySchema),
     authMiddleware,
-    roleMiddleware([USER_ROLE.USER]),
+    roleMiddleware([USER_ROLE.USER, USER_ROLE.DEMO]),
   ],
   getSyncController
 );
