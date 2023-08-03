@@ -1,38 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { LOG_TAG, RATE_LIMIT } from '../utils/enums';
-import { RateLimiter } from '../utils/RateLimiter';
-import { throwError } from '../utils/errorCodes';
-import logger from '../utils/logger';
-
-const X_REAL_IP = 'X-Real-IP';
+import { RATE_LIMIT } from '../utils/enums';
 
 export const rateLimiterMiddleware = (
-  limit: RATE_LIMIT
+  _: RATE_LIMIT
 ): ((req: Request, res: Response, next: NextFunction) => any) => {
-  return async (req, res, next) => {
-    try {
-      const realIP: string = req.header(X_REAL_IP);
+  return async (__, ___, next) => {
+    return next();
 
-      if (realIP) {
-        const record: any = await RateLimiter.get(realIP, req);
+    // try {
+    //   const realIP: string = req.header(X_REAL_IP);
 
-        if (record) {
-          logger.warn(
-            `Too many requests from ${realIP} for URL: ${req.originalUrl} METHOD: ${req.method}`,
-            [LOG_TAG.REST, LOG_TAG.SECURITY]
-          );
-          throw throwError(429, 'Too many requests', req);
-        } else {
-          await RateLimiter.set(realIP, req, limit);
+    //   if (realIP) {
+    //     const record: any = await RateLimiter.get(realIP, req);
 
-          return next();
-        }
-      }
+    //     if (record) {
+    //       logger.warn(
+    //         `Too many requests from ${realIP} for URL: ${req.originalUrl} METHOD: ${req.method}`,
+    //         [LOG_TAG.REST, LOG_TAG.SECURITY]
+    //       );
+    //       throw throwError(429, 'Too many requests', req);
+    //     } else {
+    //       await RateLimiter.set(realIP, req, limit);
 
-      return next();
-    } catch (e) {
-      return next(e);
-    }
+    //       return next();
+    //     }
+    //   }
+
+    //   return next();
+    // } catch (e) {
+    //   return next(e);
+    // }
   };
 };
